@@ -8,13 +8,8 @@
         
           
             for(var i=0;i<response.length;i++){
-                if(response[i].completed===false){
-                output +="<div class='row'>" +"<input id='check' type ='checkbox'>"+ response[i].title+"</div>"+ "<br>";
-                } 
-            if(response[i].completed===true){
-output +=  "<div class='row'>" +"<input type ='checkbox'  checked='checked' disabled='disabled'>"+ response[i].title+"</div>"+ "<br>";
-        response[i].completed?'checked disabled':'';
-            }  
+        let load = response[i].completed===true?`<li class='disabled'>`:'<li>';
+        output += load + `<input type='checkbox' class='check' ${response[i].completed?'checked':''}> ${response[i].title} </li> <br>`;
                    
     } 
     document.getElementById("demo").innerHTML= output;
@@ -28,19 +23,26 @@ output +=  "<div class='row'>" +"<input type ='checkbox'  checked='checked' disa
 xhttp.open("GET","https://jsonplaceholder.typicode.com/todos",true);
 xhttp.send();
 
-var check =document.getElementsById("check").checked;
-var promise= new Promise(function(resolve,reject){
-    
-    var m=0;
-    if(check===true){
-             m=m+1;
-    }
-             if(m===5){
-                 resolve("congrats. 5 tasks completed");
-             
+let count=0;
+$('#demo').on('click','.check',function(e){
+    if($(this).prop('checked')===true){
+        count++;
+        $(this).parent().addClass('disabled');
+      call();
     }
 })
-promise
-.then(function(t){
+
+function call(){
+new Promise(function(resolve,reject){
+if(count===5){
+    resolve("congrats. 5 tasks completed");
+}else{
+    reject("error");
+}
+}).then(function(t){
     alert(t);
 })
+.catch(function(y){
+    alert(y);
+})
+}
